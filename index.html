@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>track</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <div class="title-block">
+          <h1>track</h1>
+          <p>Живой трекер задач с компактным списком, паузами и деталями.</p>
+        </div>
+        <button class="button button-primary" id="open-create-button">+ Новая задача</button>
+      </header>
+
+      <section class="section">
+        <div class="section-title">
+          <h2>Активные по сроку</h2>
+        </div>
+        <div class="table" id="timed-list"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">
+          <h2>Фоновые</h2>
+        </div>
+        <div class="table" id="background-list"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">
+          <h2>Ожидают запуска</h2>
+        </div>
+        <div class="table" id="todo-list"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">
+          <h2>Завершенные</h2>
+        </div>
+        <div class="table" id="done-list"></div>
+      </section>
+    </main>
+
+    <div class="modal-overlay" id="create-overlay" aria-hidden="true">
+      <div class="modal-shell modal">
+        <div class="modal-header">
+          <h3>Новая задача</h3>
+          <button class="button button-quiet" data-close-create>Закрыть</button>
+        </div>
+        <form id="create-form" class="form-grid">
+          <div class="field full-width">
+            <label for="task-title">Название</label>
+            <input class="input" id="task-title" name="title" type="text" required />
+          </div>
+
+          <div class="field full-width">
+            <label>Тип</label>
+            <div class="toggle-row" id="type-toggle">
+              <button class="toggle-chip active" type="button" data-task-type="timed">Со сроком</button>
+              <button class="toggle-chip" type="button" data-task-type="background">Фоновая</button>
+            </div>
+          </div>
+
+          <div class="field full-width" id="schedule-mode-field">
+            <label>Режим срока</label>
+            <div class="toggle-row" id="schedule-toggle">
+              <button class="toggle-chip active" type="button" data-schedule-mode="date">Дата</button>
+              <button class="toggle-chip" type="button" data-schedule-mode="plan">План</button>
+            </div>
+          </div>
+
+          <div class="field full-width" id="deadline-field">
+            <label for="task-deadline">Срок</label>
+            <input class="input" id="task-deadline" name="deadlineDate" type="date" />
+          </div>
+
+          <div class="field" id="plan-amount-field" hidden>
+            <label for="task-plan-amount">Количество</label>
+            <input class="input" id="task-plan-amount" name="plannedAmount" type="number" min="1" step="1" />
+          </div>
+
+          <div class="field" id="plan-unit-field" hidden>
+            <label for="task-plan-unit">Единица</label>
+            <select class="input" id="task-plan-unit" name="plannedUnit">
+              <option value="minutes">минуты</option>
+              <option value="hours">часы</option>
+              <option value="days">дни</option>
+              <option value="weeks">недели</option>
+              <option value="months">месяцы</option>
+              <option value="years">годы</option>
+            </select>
+          </div>
+
+          <div class="field full-width">
+            <label for="task-description">Описание</label>
+            <textarea class="input textarea" id="task-description" name="description"></textarea>
+          </div>
+
+          <div class="field full-width">
+            <label for="task-notes">Заметки</label>
+            <textarea class="input textarea" id="task-notes" name="notes"></textarea>
+          </div>
+
+          <div class="modal-actions full-width">
+            <button class="button" type="button" data-close-create>Отмена</button>
+            <button class="button button-primary" type="submit">Создать</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="details-overlay" aria-hidden="true">
+      <div class="modal-shell modal details-modal" role="dialog" aria-modal="true" aria-labelledby="details-title">
+        <div class="modal-header">
+          <h3 id="details-title">Детали задачи</h3>
+          <button class="button button-quiet" data-close-details>Закрыть</button>
+        </div>
+        <div class="details-head">
+          <div>
+            <div class="details-subtitle" id="details-meta"></div>
+          </div>
+        </div>
+        <div class="details-section">
+          <h4>Режим срока</h4>
+          <div class="input" id="details-schedule"></div>
+        </div>
+        <div class="details-section">
+          <h4>Описание задачи</h4>
+          <div class="input" id="details-description"></div>
+        </div>
+        <div class="details-section">
+          <h4>Контекст и заметки</h4>
+          <div class="input" id="details-notes"></div>
+        </div>
+        <div class="details-section">
+          <h4>Последняя причина паузы</h4>
+          <div class="input" id="details-last-pause"></div>
+        </div>
+        <div class="details-section">
+          <h4>Причина завершения</h4>
+          <div class="input" id="details-completion"></div>
+        </div>
+        <div class="details-section">
+          <h4>История событий</h4>
+          <div class="event-list" id="details-events"></div>
+        </div>
+        <div class="modal-actions">
+          <button class="button button-quiet" data-close-details>Закрыть</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="reason-overlay" aria-hidden="true">
+      <div class="modal-shell modal">
+        <div class="modal-header">
+          <h3 id="reason-title">Причина</h3>
+          <button class="button button-quiet" data-close-reason>Закрыть</button>
+        </div>
+        <form id="reason-form" class="form-grid">
+          <div class="field full-width">
+            <label for="reason-input" id="reason-label">Укажи причину</label>
+            <textarea class="input textarea" id="reason-input" name="reason" required></textarea>
+          </div>
+          <div class="modal-actions full-width">
+            <button class="button" type="button" data-close-reason>Отмена</button>
+            <button class="button button-primary" type="submit" id="reason-submit">Сохранить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="./src/main.js"></script>
+  </body>
+  </html>
