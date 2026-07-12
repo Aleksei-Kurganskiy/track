@@ -1,0 +1,1177 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>track mockup</title>
+    <style>
+      :root {
+        --bg: #eef1f4;
+        --panel: #ffffff;
+        --text: #111827;
+        --muted: #6b7280;
+        --line: #d6dbe1;
+        --soft: #f7f8fa;
+        --green: #16a34a;
+        --yellow: #eab308;
+        --red: #dc2626;
+        --blue: #2563eb;
+        --black: #111111;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font: 13px/1.35 Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .page {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 14px;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .title h1 {
+        margin: 0;
+        font-size: 26px;
+      }
+
+      .title p {
+        margin: 2px 0 0;
+        color: var(--muted);
+      }
+
+      .button {
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--text);
+        border-radius: 7px;
+        padding: 5px 9px;
+        font-size: 11px;
+        line-height: 1.2;
+        white-space: nowrap;
+      }
+
+      .button-primary {
+        background: #111827;
+        border-color: #111827;
+        color: #fff;
+      }
+
+      .button-danger {
+        background: #fff1f2;
+        border-color: #fecdd3;
+        color: #9f1239;
+      }
+
+      .button-quiet {
+        background: var(--soft);
+      }
+
+      .section {
+        margin-bottom: 14px;
+      }
+
+      .section-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      .section-title h2 {
+        margin: 0;
+        font-size: 16px;
+      }
+
+      .section-title span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .table {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--panel);
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: minmax(180px, 1.2fr) minmax(280px, 1.8fr) max-content;
+        grid-template-areas:
+          "task meta actions"
+          "track track track";
+        column-gap: 10px;
+        row-gap: 6px;
+        align-items: center;
+        padding: 8px 10px;
+        border-top: 1px solid var(--line);
+      }
+
+      .row:first-child {
+        border-top: 0;
+      }
+
+      .row:nth-child(even) {
+        background: #fbfcfd;
+      }
+
+      .task {
+        grid-area: task;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .task-main {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .task-name {
+        font-size: 14px;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .badges {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        margin-top: 0;
+      }
+
+      .badge {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 2px 7px;
+        font-size: 10px;
+        background: #fff;
+        white-space: nowrap;
+      }
+
+      .active { background: #dcfce7; border-color: #86efac; }
+      .paused { background: #f3f4f6; border-color: #d1d5db; }
+      .done { background: #dbeafe; border-color: #93c5fd; }
+
+      .meta {
+        grid-area: meta;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 10px;
+        color: var(--muted);
+        min-width: 0;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .meta strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .track {
+        grid-area: track;
+        min-width: 0;
+      }
+
+      .track-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 4px;
+        font-size: 12px;
+      }
+
+      .track-note {
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .bar {
+        height: 10px;
+        display: flex;
+        overflow: hidden;
+        border-radius: 999px;
+        background: #e5e7eb;
+      }
+
+      .seg-green { background: var(--green); }
+      .seg-yellow { background: var(--yellow); }
+      .seg-red { background: var(--red); }
+      .seg-blue { background: var(--blue); }
+      .seg-black { background: var(--black); }
+      .seg-rest { background: #e5e7eb; }
+
+      .actions {
+        grid-area: actions;
+        display: flex;
+        gap: 6px;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+        min-width: max-content;
+        align-items: center;
+      }
+
+      .reason-row {
+        grid-column: 1 / -1;
+        padding-top: 2px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .details-hint {
+        color: var(--muted);
+        font-size: 11px;
+        margin-left: 8px;
+      }
+
+      .empty {
+        padding: 10px;
+        color: var(--muted);
+        background: var(--panel);
+        border: 1px dashed var(--line);
+        border-radius: 10px;
+      }
+
+      .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .preview-grid-wide {
+        grid-template-columns: 1fr;
+      }
+
+      .modal {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+      }
+
+      .modal h3 {
+        margin: 0 0 10px;
+        font-size: 15px;
+      }
+
+      .field {
+        margin-bottom: 8px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--muted);
+      }
+
+      .input {
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 8px;
+        padding: 8px 10px;
+      }
+
+      .toggle-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .toggle-chip {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 6px 10px;
+        background: #fff;
+        font-size: 12px;
+      }
+
+      .toggle-chip.active {
+        background: #111827;
+        border-color: #111827;
+        color: #fff;
+      }
+
+      .mode-preview {
+        border: 1px dashed var(--line);
+        border-radius: 8px;
+        padding: 10px;
+        background: var(--soft);
+      }
+
+      .mode-preview strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 12px;
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(17, 24, 39, 0.45);
+        z-index: 1000;
+      }
+
+      .modal-overlay.is-open {
+        display: flex;
+      }
+
+      .modal-shell {
+        width: min(960px, 100%);
+        max-height: calc(100vh - 40px);
+        overflow: auto;
+      }
+
+      .details-modal {
+        display: grid;
+        gap: 12px;
+      }
+
+      .details-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .details-head h3 {
+        margin: 0 0 4px;
+        font-size: 18px;
+      }
+
+      .details-subtitle {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .details-section {
+        display: grid;
+        gap: 8px;
+      }
+
+      .details-section h4 {
+        margin: 0;
+        font-size: 13px;
+      }
+
+      .details-text {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .event-list {
+        display: grid;
+        gap: 6px;
+      }
+
+      .event-row {
+        display: grid;
+        grid-template-columns: 90px 110px 1fr;
+        gap: 10px;
+        align-items: start;
+        padding: 8px 9px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      .event-time,
+      .event-type {
+        font-size: 12px;
+      }
+
+      .event-type {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .event-note {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .variants {
+        display: grid;
+        gap: 10px;
+      }
+
+      .variant {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px;
+      }
+
+      .variant-label {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .variant-row-1 {
+        display: grid;
+        grid-template-columns: minmax(220px, 1.6fr) minmax(280px, 2fr) minmax(240px, 1.8fr) auto;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .variant-row-2 {
+        display: grid;
+        grid-template-columns: minmax(240px, 1.7fr) minmax(220px, 1.2fr) minmax(320px, 2fr) auto;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .variant-player {
+        display: grid;
+        gap: 8px;
+      }
+
+      .variant-player-top {
+        display: grid;
+        grid-template-columns: minmax(220px, 1.5fr) minmax(300px, 2.2fr) auto;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .variant-player-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 12px;
+        color: var(--muted);
+      }
+
+      .variant-player-meta strong {
+        color: var(--text);
+      }
+
+      .variant-stack {
+        display: grid;
+        gap: 8px;
+      }
+
+      .variant-card {
+        display: grid;
+        gap: 8px;
+      }
+
+      .variant-card-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .variant-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .variant-box {
+        background: var(--soft);
+        border-radius: 8px;
+        padding: 7px 8px;
+      }
+
+      .variant-box span {
+        display: block;
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 2px;
+      }
+
+      .variant-box strong {
+        font-size: 13px;
+      }
+
+      .variant-inline-note {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .sample {
+        display: grid;
+        gap: 8px;
+      }
+
+      .sample-top {
+        display: grid;
+        grid-template-columns: minmax(180px, 1.2fr) minmax(260px, 1.8fr) max-content;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .sample-main {
+        min-width: 0;
+      }
+
+      .sample-name-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .sample-name {
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .sample-meta {
+        display: flex;
+        gap: 6px 12px;
+        flex-wrap: wrap;
+        color: var(--muted);
+        min-width: 0;
+      }
+
+      .sample-meta strong {
+        color: var(--text);
+      }
+
+      .sample-actions {
+        display: flex;
+        gap: 6px;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+      }
+
+      .sample-bottom {
+        display: grid;
+        grid-template-columns: 70px 1fr auto;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .sample-percent {
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .sample-note {
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .sample-detail-card {
+        display: grid;
+        gap: 8px;
+      }
+
+      .sample-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      @media (max-width: 1200px) {
+        .row {
+          grid-template-columns: minmax(160px, 1.1fr) minmax(220px, 1.5fr) max-content;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .row {
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            "task"
+            "meta"
+            "actions"
+            "track";
+          gap: 6px;
+        }
+
+        .variant-row-1,
+        .variant-row-2,
+        .variant-player-top,
+        .variant-meta-grid,
+        .sample-top,
+        .sample-bottom,
+        .sample-grid,
+        .event-row {
+          grid-template-columns: 1fr;
+        }
+
+        .sample-actions {
+          justify-content: flex-start;
+          flex-wrap: wrap;
+        }
+
+        .sample-note {
+          white-space: normal;
+        }
+
+        .actions {
+          justify-content: flex-start;
+          min-width: 0;
+          flex-wrap: wrap;
+        }
+
+        .preview-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .header {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .page {
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <div class="title">
+          <h1>track</h1>
+          <p>Плотный список задач: время, паузы и срок в одной строке.</p>
+        </div>
+        <button class="button button-primary">+ Новая задача</button>
+      </header>
+
+      <section class="section">
+        <div class="section-title">
+          <h2>Основной Вариант Задачи</h2>
+        </div>
+        <div class="variants">
+          <div class="variant">
+            <div class="variant-label">
+              <strong>Закрепленный вариант</strong>
+              <span>ультра-широкая строка</span>
+            </div>
+            <div class="sample">
+              <div class="sample-top">
+                <div class="sample-main">
+                  <div class="sample-name-row">
+                    <div class="sample-name">Продумать MVP</div>
+                    <span class="badge">Со сроком</span>
+                    <span class="badge active">В работе</span>
+                  </div>
+                </div>
+                <div class="sample-meta">
+                  <span>План <strong>45м</strong></span>
+                  <span>Старт <strong>15:05</strong></span>
+                  <span>Прошло <strong>00:18:24</strong></span>
+                  <span>Просрочка <strong>нет</strong></span>
+                </div>
+                <div class="sample-actions">
+                  <button class="button button-quiet" data-open-details>Детали</button>
+                  <button class="button">Пауза</button>
+                  <button class="button button-danger">Готово</button>
+                </div>
+              </div>
+              <div class="sample-bottom">
+                <div class="sample-percent">41%</div>
+                <div class="bar">
+                  <div class="seg-green" style="width: 31%"></div>
+                  <div class="seg-black" style="width: 10%"></div>
+                  <div class="seg-rest" style="width: 59%"></div>
+                </div>
+                <div class="sample-note">максимально плотный режим</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">
+          <h2>Активные по сроку</h2>
+        </div>
+        <div class="table">
+          <div class="row">
+            <div class="task">
+              <div class="task-main">
+                <div class="task-name">Сделать README</div>
+              </div>
+              <div class="badges">
+                <span class="badge">Со сроком</span>
+                <span class="badge active">В работе</span>
+              </div>
+            </div>
+            <div class="meta">
+              <span>План <strong>45м</strong></span>
+              <span>Старт <strong>14:32:10</strong></span>
+              <span>Прошло <strong>00:18:24</strong></span>
+              <span>Прогресс <strong>41%</strong></span>
+              <span>Просрочка <strong>нет</strong></span>
+            </div>
+            <div class="track">
+              <div class="bar">
+                <div class="seg-green" style="width: 41%"></div>
+                <div class="seg-rest" style="width: 59%"></div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="button button-quiet" data-open-details>Детали</button>
+              <button class="button">Пауза</button>
+              <button class="button button-danger">Завершить</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="task">
+              <div class="task-main">
+                <div class="task-name">Продумать MVP</div>
+              </div>
+              <div class="badges">
+                <span class="badge">Со сроком</span>
+                <span class="badge active">В работе</span>
+              </div>
+            </div>
+            <div class="meta">
+              <span>Срок <strong>23.12.2026</strong></span>
+              <span>Старт <strong>15:05:02</strong></span>
+              <span>Прошло <strong>00:52:11</strong></span>
+              <span>Прогресс <strong>87%</strong></span>
+              <span>Просрочка <strong>нет</strong></span>
+            </div>
+            <div class="track">
+              <div class="bar">
+                <div class="seg-red" style="width: 72%"></div>
+                <div class="seg-black" style="width: 15%"></div>
+                <div class="seg-rest" style="width: 13%"></div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="button button-quiet" data-open-details>Детали</button>
+              <button class="button">Пауза</button>
+              <button class="button button-danger">Завершить</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="task">
+              <div class="task-main">
+                <div class="task-name">Сверстать первый экран</div>
+              </div>
+              <div class="badges">
+                <span class="badge">Со сроком</span>
+                <span class="badge paused">На паузе</span>
+              </div>
+            </div>
+            <div class="meta">
+              <span>Срок <strong>18.07.2026</strong></span>
+              <span>Старт <strong>13:10:00</strong></span>
+              <span>Прошло <strong>00:28:40</strong></span>
+              <span>Прогресс <strong>95%</strong></span>
+              <span>Просрочка <strong>нет</strong></span>
+            </div>
+            <div class="track">
+              <div class="bar">
+                <div class="seg-red" style="width: 78%"></div>
+                <div class="seg-black" style="width: 17%"></div>
+                <div class="seg-rest" style="width: 5%"></div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="button button-quiet" data-open-details>Детали</button>
+              <button class="button button-primary">Продолжить</button>
+              <button class="button button-danger">Завершить</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="task">
+              <div class="task-main">
+                <div class="task-name">Разобрать заметки по UX</div>
+              </div>
+              <div class="badges">
+                <span class="badge">Со сроком</span>
+                <span class="badge active">В работе</span>
+              </div>
+            </div>
+            <div class="meta">
+              <span>План <strong>25м</strong></span>
+              <span>Старт <strong>16:01:44</strong></span>
+              <span>Прошло <strong>00:07:11</strong></span>
+              <span>Прогресс <strong>29%</strong></span>
+              <span>Просрочка <strong>нет</strong></span>
+            </div>
+            <div class="track">
+              <div class="bar">
+                <div class="seg-green" style="width: 29%"></div>
+                <div class="seg-rest" style="width: 71%"></div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="button button-quiet" data-open-details>Детали</button>
+              <button class="button">Пауза</button>
+              <button class="button button-danger">Завершить</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">
+          <h2>Фоновые</h2>
+        </div>
+        <div class="table">
+          <div class="row">
+            <div class="task">
+              <div class="task-main">
+                <div class="task-name">Продумывание архитектуры</div>
+              </div>
+              <div class="badges">
+                <span class="badge">Фоновая</span>
+                <span class="badge active">В работе</span>
+              </div>
+            </div>
+            <div class="meta">
+              <span>Работа <strong>01:24:12</strong></span>
+              <span>Паузы <strong>00:18:05</strong></span>
+              <span>Всего <strong>01:42:17</strong></span>
+              <span>Лента <strong>активна</strong></span>
+              <span>Срок <strong>нет</strong></span>
+            </div>
+            <div class="track">
+              <div class="bar">
+                <div class="seg-blue" style="width: 72%"></div>
+                <div class="seg-black" style="width: 18%"></div>
+                <div class="seg-blue" style="width: 10%"></div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="button button-quiet" data-open-details>Детали</button>
+              <button class="button">Пауза</button>
+              <button class="button button-danger">Завершить</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="task">
+              <div class="task-main">
+                <div class="task-name">Сбор идей по продукту</div>
+              </div>
+              <div class="badges">
+                <span class="badge">Фоновая</span>
+                <span class="badge paused">На паузе</span>
+              </div>
+            </div>
+            <div class="meta">
+              <span>Работа <strong>00:43:18</strong></span>
+              <span>Паузы <strong>00:11:47</strong></span>
+              <span>Всего <strong>00:55:05</strong></span>
+              <span>Лента <strong>на паузе</strong></span>
+              <span>Срок <strong>нет</strong></span>
+            </div>
+            <div class="track">
+              <div class="bar">
+                <div class="seg-blue" style="width: 40%"></div>
+                <div class="seg-black" style="width: 12%"></div>
+                <div class="seg-blue" style="width: 20%"></div>
+                <div class="seg-black" style="width: 8%"></div>
+                <div class="seg-blue" style="width: 20%"></div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="button button-quiet" data-open-details>Детали</button>
+              <button class="button button-primary">Продолжить</button>
+              <button class="button button-danger">Завершить</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">
+          <h2>Ожидают запуска</h2>
+        </div>
+        <div class="table">
+          <div class="row">
+            <div class="task">
+              <div class="task-main">
+                <div class="task-name">Набросать структуру данных</div>
+              </div>
+              <div class="badges">
+                <span class="badge">Со сроком</span>
+                <span class="badge">Не начата</span>
+              </div>
+            </div>
+            <div class="meta">
+              <span>Срок <strong>23.12.2026</strong></span>
+              <span>Старт <strong>еще нет</strong></span>
+              <span>Прошло <strong>00:00:00</strong></span>
+              <span>Прогресс <strong>0%</strong></span>
+              <span>Просрочка <strong>нет</strong></span>
+            </div>
+            <div class="track">
+              <div class="bar">
+                <div class="seg-rest" style="width: 100%"></div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="button button-quiet" data-open-details>Детали</button>
+              <button class="button button-primary">Старт</button>
+              <button class="button button-quiet">Удалить</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="task">
+              <div class="task-main">
+                <div class="task-name">Исследование похожих сервисов</div>
+              </div>
+              <div class="badges">
+                <span class="badge">Фоновая</span>
+                <span class="badge">Не начата</span>
+              </div>
+            </div>
+            <div class="meta">
+              <span>Работа <strong>00:00:00</strong></span>
+              <span>Паузы <strong>00:00:00</strong></span>
+              <span>Всего <strong>00:00:00</strong></span>
+              <span>Лента <strong>пусто</strong></span>
+              <span>Срок <strong>нет</strong></span>
+            </div>
+            <div class="track">
+              <div class="bar">
+                <div class="seg-rest" style="width: 100%"></div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="button button-quiet" data-open-details>Детали</button>
+              <button class="button button-primary">Старт</button>
+              <button class="button button-quiet">Удалить</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">
+          <h2>Завершенные</h2>
+        </div>
+        <div class="table">
+          <div class="row">
+            <div class="task">
+              <div class="task-main">
+                <div class="task-name">Создать репозиторий</div>
+              </div>
+              <div class="badges">
+                <span class="badge">Со сроком</span>
+                <span class="badge done">Завершена</span>
+              </div>
+            </div>
+            <div class="meta">
+              <span>Срок <strong>12.07.2026</strong></span>
+              <span>Выполнено <strong>00:07:43</strong></span>
+              <span>Паузы <strong>00:00:00</strong></span>
+              <span>Прогресс <strong>100%</strong></span>
+              <span>Просрочка <strong>нет</strong></span>
+            </div>
+            <div class="track">
+              <div class="bar">
+                <div class="seg-green" style="width: 100%"></div>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="button button-quiet" data-open-details>Детали</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">
+          <h2>Превью окон</h2>
+        </div>
+        <div class="preview-grid">
+          <div class="modal">
+            <h3>Новая задача</h3>
+            <div class="field">
+              <label>Название</label>
+              <div class="input">Сделать базовую версию track</div>
+            </div>
+            <div class="field">
+              <label>Тип</label>
+              <div class="input">Со сроком</div>
+            </div>
+            <div class="field">
+              <label>Режим срока</label>
+              <div class="toggle-row">
+                <div class="toggle-chip active">Дата</div>
+                <div class="toggle-chip">План</div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Срок</label>
+              <div class="input">23.12.2026</div>
+            </div>
+            <div class="field">
+              <label>Альтернативный режим</label>
+              <div class="mode-preview">
+                <strong>Если выбрать "План"</strong>
+                <div class="input">Количество: 6 | Единица: часов</div>
+              </div>
+            </div>
+            <div class="modal-actions">
+              <button class="button">Отмена</button>
+              <button class="button button-primary">Создать</button>
+            </div>
+          </div>
+
+          <div class="modal">
+            <h3>Пауза задачи</h3>
+            <div class="field">
+              <label>Причина паузы</label>
+              <div class="input">Срочный созвон</div>
+            </div>
+            <div class="field">
+              <label>Подробности</label>
+              <div class="input">Переключение на внешний срочный созвон, вернуться через 20 минут.</div>
+            </div>
+            <div class="modal-actions">
+              <button class="button">Отмена</button>
+              <button class="button button-primary">Пауза</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-overlay" id="details-overlay" aria-hidden="true">
+          <div class="modal modal-shell details-modal" role="dialog" aria-modal="true" aria-labelledby="details-title">
+            <div class="details-head">
+              <div>
+                <h3 id="details-title">Детали задачи: Продумать MVP</h3>
+                <div class="details-subtitle">Подробное описание задачи и история событий без дублирования метрик из списка.</div>
+              </div>
+              <div class="badges">
+                <span class="badge">Со сроком</span>
+                <span class="badge active">В работе</span>
+              </div>
+            </div>
+
+            <div class="details-section">
+              <h4>Режим срока</h4>
+              <div class="input">План: 45 минут</div>
+            </div>
+
+            <div class="details-section">
+              <h4>Описание задачи</h4>
+              <div class="input">Собрать короткую и устойчивую спецификацию MVP для `track`: определить главный рабочий экран, закрепить правила отображения активных задач, пауз и завершения, а также не раздувать интерфейс и модель без реальной необходимости.</div>
+            </div>
+
+            <div class="details-section">
+              <h4>Контекст и заметки</h4>
+              <div class="input">Эта задача нужна как опорная для всей первой версии продукта. После фиксации UX-макета по списку задач можно переходить к статической верстке и затем к минимальной логике.</div>
+            </div>
+
+            <div class="details-section">
+              <h4>Последняя причина паузы</h4>
+              <div class="input">Срочный созвон по другому проекту. Вернуться к задаче сразу после окончания.</div>
+            </div>
+
+            <div class="details-section">
+              <h4>История событий</h4>
+              <div class="event-list">
+                <div class="event-row">
+                  <div class="event-time">15:05:02</div>
+                  <div class="event-type">Запуск</div>
+                  <div class="event-note">Задача запущена без комментария.</div>
+                </div>
+                <div class="event-row">
+                  <div class="event-time">15:18:41</div>
+                  <div class="event-type">Пауза</div>
+                  <div class="event-note">Срочный созвон по другому проекту.</div>
+                </div>
+                <div class="event-row">
+                  <div class="event-time">15:22:16</div>
+                  <div class="event-type">Продолжение</div>
+                  <div class="event-note">Работа продолжена без комментария.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-actions">
+              <button class="button button-quiet" data-close-details>Закрыть</button>
+              <button class="button">Пауза</button>
+              <button class="button button-danger">Завершить</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+      (function () {
+        var overlay = document.getElementById("details-overlay");
+        if (!overlay) return;
+
+        var openButtons = document.querySelectorAll("[data-open-details]");
+        var closeButtons = overlay.querySelectorAll("[data-close-details]");
+
+        function openDetails() {
+          overlay.classList.add("is-open");
+          overlay.setAttribute("aria-hidden", "false");
+        }
+
+        function closeDetails() {
+          overlay.classList.remove("is-open");
+          overlay.setAttribute("aria-hidden", "true");
+        }
+
+        for (var i = 0; i < openButtons.length; i += 1) {
+          openButtons[i].addEventListener("click", openDetails);
+        }
+
+        for (var j = 0; j < closeButtons.length; j += 1) {
+          closeButtons[j].addEventListener("click", closeDetails);
+        }
+
+        overlay.addEventListener("click", function (event) {
+          if (event.target === overlay) {
+            closeDetails();
+          }
+        });
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape" && overlay.classList.contains("is-open")) {
+            closeDetails();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
