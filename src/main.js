@@ -2,7 +2,6 @@ var STORAGE_KEY = "track.tasks.v1";
 
 var state = {
   tasks: [],
-  selectedTaskId: null,
   reasonAction: null,
   draftType: "timed",
   draftScheduleMode: "date",
@@ -55,10 +54,6 @@ function startOfToday() {
 
 function addDays(baseTime, days) {
   return baseTime + days * 24 * 60 * 60 * 1000;
-}
-
-function toIsoDate(time) {
-  return new Date(time).toISOString().slice(0, 10);
 }
 
 function defaultTasks() {
@@ -368,11 +363,9 @@ function deriveTask(task, currentTime) {
   var pauseWidth = 0;
   var restWidth = 100;
   var workClass = "seg-work-green";
-  var scheduleText = "Без срока";
 
   if (task.type === "timed" && task.scheduleMode === "plan") {
     var plannedMs = durationToMs(task.plannedAmount, task.plannedUnit);
-    scheduleText = "План: " + task.plannedAmount + " " + unitLabel(task.plannedUnit);
     if (plannedMs > 0) {
       progressRatio = consumedMs / plannedMs;
       isOverdue = consumedMs > plannedMs;
@@ -383,7 +376,6 @@ function deriveTask(task, currentTime) {
   }
 
   if (task.type === "timed" && task.scheduleMode === "date") {
-    scheduleText = "Срок: " + formatDate(task.deadlineDate);
     var deadlineMs = endOfDate(task.deadlineDate);
     var baseline = firstStartedAt || task.createdAt;
     var totalMs = deadlineMs ? Math.max(deadlineMs - baseline, 1) : 1;
@@ -395,7 +387,6 @@ function deriveTask(task, currentTime) {
   }
 
   if (task.type === "background") {
-    scheduleText = "Фоновая задача";
     var totalActivity = activeDurationMs + pausedDurationMs;
     if (totalActivity > 0) {
       workWidth = clamp((activeDurationMs / totalActivity) * 100, 0, 100);
@@ -426,7 +417,6 @@ function deriveTask(task, currentTime) {
     pauseWidth: pauseWidth,
     restWidth: restWidth,
     workClass: task.type === "background" ? "seg-background" : workClass,
-    scheduleText: scheduleText,
   };
 }
 
@@ -608,7 +598,6 @@ function openDetails(taskId) {
   var task = findTask(taskId);
   if (!task) return;
   var derived = deriveTask(task, now());
-  state.selectedTaskId = taskId;
   elements.detailsTitle.textContent = "Детали задачи: " + task.title;
   elements.detailsMeta.textContent = typeLabel(task.type) + " | " + statusLabel(task.status);
   elements.detailsSchedule.textContent = task.type === "background"
