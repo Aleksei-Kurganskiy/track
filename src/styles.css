@@ -23,6 +23,11 @@ body {
   color: var(--text);
 }
 
+body:not(.authenticated) .page,
+body:not(.authenticated) .modal-overlay {
+  display: none !important;
+}
+
 button,
 input,
 select,

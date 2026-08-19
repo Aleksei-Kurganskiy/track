@@ -5,8 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>track</title>
     <link rel="stylesheet" href="./src/styles.css" />
+    <style>
+      #auth-screen {
+        position: fixed; inset: 0; z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        background: #0d0d0d;
+      }
+      #auth-screen.hidden { display: none; }
+      .auth-box {
+        background: #1a1a2e; padding: 2rem; border-radius: 12px;
+        width: 320px; box-shadow: 0 0 40px rgba(0,0,0,.5);
+      }
+      .auth-box h1 { margin: 0 0 .5rem; font-size: 1.5rem; text-align: center; }
+      .auth-box p { text-align: center; color: #888; margin: 0 0 1.5rem; font-size: .85rem; }
+      .auth-box label { display: block; font-size: .85rem; margin-bottom: .25rem; color: #ccc; }
+      .auth-box input { width: 100%; padding: .6rem .75rem; margin-bottom: 1rem; border: 1px solid #333; border-radius: 8px; background: #16162a; color: #eee; font-size: .9rem; box-sizing: border-box; }
+      .auth-box input:focus { outline: none; border-color: #7c5cfc; }
+      .auth-box button { width: 100%; padding: .7rem; border: none; border-radius: 8px; background: #7c5cfc; color: #fff; font-size: 1rem; cursor: pointer; font-weight: 600; }
+      .auth-box button:hover { background: #6a4be0; }
+      .auth-error { color: #f44; font-size: .8rem; text-align: center; margin-top: .75rem; display: none; }
+    </style>
   </head>
   <body>
+    <div id="auth-screen">
+      <div class="auth-box">
+        <h1>track</h1>
+        <p>Войди, чтобы продолжить</p>
+        <label for="auth-user">Пользователь</label>
+        <input id="auth-user" type="text" placeholder="user1 / user2 / user3" autocomplete="username" />
+        <label for="auth-pass">Пароль</label>
+        <input id="auth-pass" type="password" placeholder="••••••••" autocomplete="current-password" />
+        <button id="auth-button">Войти</button>
+        <div class="auth-error" id="auth-error">Неверные логин или пароль</div>
+      </div>
+    </div>
+    <script>
+      const USERS = {
+        user1: 'PsKoV#5',
+        user2: 'PsKoV#5',
+        user3: 'PsKoV#5',
+      };
+      (function() {
+        const saved = sessionStorage.getItem('track_auth');
+        if (saved && USERS[saved]) { document.body.classList.add('authenticated'); return; }
+        const screen = document.getElementById('auth-screen');
+        screen.classList.remove('hidden');
+        document.body.classList.remove('authenticated');
+        function tryLogin() {
+          const u = document.getElementById('auth-user').value.trim().toLowerCase();
+          const p = document.getElementById('auth-pass').value;
+          if (USERS[u] && USERS[u] === p) {
+            sessionStorage.setItem('track_auth', u);
+            screen.classList.add('hidden');
+            document.body.classList.add('authenticated');
+          } else {
+            document.getElementById('auth-error').style.display = 'block';
+          }
+        }
+        document.getElementById('auth-button').addEventListener('click', tryLogin);
+        document.getElementById('auth-pass').addEventListener('keydown', function(e) { if (e.key === 'Enter') tryLogin(); });
+      })();
+    </script>
     <main class="page">
       <header class="header">
         <div class="title-block">
