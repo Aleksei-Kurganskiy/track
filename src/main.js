@@ -1,4 +1,7 @@
-var STORAGE_KEY = "track.tasks.v1";
+var SUPABASE_URL = 'https://gsohsedhinkduipegapx.supabase.co';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdzb2hzZWRoaW5rZHVpcGVnYXB4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNDAyMzAsImV4cCI6MjEwMjcxNjIzMH0.8B9BB-doAMStrhgg2iZK1RDkNGGVS2OoyjSSnjKztgw';
+
+var _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 var state = {
   tasks: [],
@@ -36,6 +39,13 @@ var elements = {
   reasonLabel: document.getElementById("reason-label"),
   reasonInput: document.getElementById("reason-input"),
   reasonSubmit: document.getElementById("reason-submit"),
+  authScreen: document.getElementById("auth-screen"),
+  authUser: document.getElementById("auth-user"),
+  authPass: document.getElementById("auth-pass"),
+  authButton: document.getElementById("auth-button"),
+  authError: document.getElementById("auth-error"),
+  authUsername: document.getElementById("auth-username"),
+  logoutButton: document.getElementById("logout-button"),
 };
 
 function uid() {
@@ -54,181 +64,6 @@ function startOfToday() {
 
 function addDays(baseTime, days) {
   return baseTime + days * 24 * 60 * 60 * 1000;
-}
-
-function defaultTasks() {
-  var base = startOfToday();
-  return [
-    {
-      id: uid(),
-      title: "Сделать README",
-      type: "timed",
-      status: "active",
-      scheduleMode: "plan",
-      deadlineDate: null,
-      plannedAmount: 45,
-      plannedUnit: "minutes",
-      description: "Собрать первое описание проекта и закрепить идею продукта.",
-      notes: "Нужна короткая и ясная формулировка без лишних деталей.",
-      createdAt: addDays(base, -1),
-      history: [
-        { type: "created", at: addDays(base, -1), reason: null },
-        { type: "started", at: base + 14 * 60 * 60 * 1000 + 32 * 60 * 1000 + 10 * 1000, reason: null },
-      ],
-    },
-    {
-      id: uid(),
-      title: "Продумать MVP",
-      type: "timed",
-      status: "active",
-      scheduleMode: "date",
-      deadlineDate: "2026-12-23",
-      plannedAmount: null,
-      plannedUnit: null,
-      description: "Определить минимальный набор функций и правил для первого рабочего трекера.",
-      notes: "Задача связана с планированием модели и интерфейса.",
-      createdAt: addDays(base, -2),
-      history: [
-        { type: "created", at: addDays(base, -2), reason: null },
-        { type: "started", at: base + 15 * 60 * 60 * 1000 + 5 * 60 * 1000 + 2 * 1000, reason: null },
-        { type: "paused", at: base + 15 * 60 * 60 * 1000 + 18 * 60 * 1000 + 41 * 1000, reason: "Срочный созвон по другому проекту." },
-        { type: "resumed", at: base + 15 * 60 * 60 * 1000 + 22 * 60 * 1000 + 16 * 1000, reason: null },
-      ],
-    },
-    {
-      id: uid(),
-      title: "Сверстать первый экран",
-      type: "timed",
-      status: "paused",
-      scheduleMode: "date",
-      deadlineDate: "2026-07-18",
-      plannedAmount: null,
-      plannedUnit: null,
-      description: "Собрать компактный экран со списком задач в 2 строки на одну задачу.",
-      notes: "Нужно выдержать плотность и читаемость без перегруза.",
-      createdAt: addDays(base, -1),
-      history: [
-        { type: "created", at: addDays(base, -1), reason: null },
-        { type: "started", at: base + 13 * 60 * 60 * 1000 + 10 * 1000, reason: null },
-        { type: "paused", at: base + 13 * 60 * 60 * 1000 + 28 * 60 * 1000 + 40 * 1000, reason: "Нужно переключиться на обсуждение UX." },
-      ],
-    },
-    {
-      id: uid(),
-      title: "Разобрать заметки по UX",
-      type: "timed",
-      status: "active",
-      scheduleMode: "plan",
-      deadlineDate: null,
-      plannedAmount: 25,
-      plannedUnit: "minutes",
-      description: "Разложить замечания по списку задач и модалке деталей.",
-      notes: "Сохранить только те решения, которые реально улучшают MVP.",
-      createdAt: addDays(base, -1),
-      history: [
-        { type: "created", at: addDays(base, -1), reason: null },
-        { type: "started", at: base + 16 * 60 * 60 * 1000 + 1 * 60 * 1000 + 44 * 1000, reason: null },
-      ],
-    },
-    {
-      id: uid(),
-      title: "Продумывание архитектуры",
-      type: "background",
-      status: "active",
-      scheduleMode: "none",
-      deadlineDate: null,
-      plannedAmount: null,
-      plannedUnit: null,
-      description: "Фоновое размышление о том, как не раздуть кодовую базу раньше времени.",
-      notes: "Смотреть только на самые универсальные конструкции.",
-      createdAt: addDays(base, -3),
-      history: [
-        { type: "created", at: addDays(base, -3), reason: null },
-        { type: "started", at: addDays(base, -2), reason: null },
-        { type: "paused", at: addDays(base, -2) + 60 * 60 * 1000, reason: "Переключение на срочную задачу." },
-        { type: "resumed", at: addDays(base, -2) + 70 * 60 * 1000, reason: null },
-      ],
-    },
-    {
-      id: uid(),
-      title: "Сбор идей по продукту",
-      type: "background",
-      status: "paused",
-      scheduleMode: "none",
-      deadlineDate: null,
-      plannedAmount: null,
-      plannedUnit: null,
-      description: "Собирать в одном месте мысли о том, как продукт может вырасти после MVP.",
-      notes: "Не смешивать идеи роста с задачами первой версии.",
-      createdAt: addDays(base, -4),
-      history: [
-        { type: "created", at: addDays(base, -4), reason: null },
-        { type: "started", at: addDays(base, -4) + 2 * 60 * 60 * 1000, reason: null },
-        { type: "paused", at: addDays(base, -4) + 3 * 60 * 60 * 1000, reason: "Нужно сфокусироваться на текущем MVP." },
-      ],
-    },
-    {
-      id: uid(),
-      title: "Набросать структуру данных",
-      type: "timed",
-      status: "todo",
-      scheduleMode: "date",
-      deadlineDate: "2026-12-23",
-      plannedAmount: null,
-      plannedUnit: null,
-      description: "Определить поля задачи, историю событий и derived state.",
-      notes: "Никаких лишних сущностей на первом шаге.",
-      createdAt: now(),
-      history: [{ type: "created", at: now(), reason: null }],
-    },
-    {
-      id: uid(),
-      title: "Исследование похожих сервисов",
-      type: "background",
-      status: "todo",
-      scheduleMode: "none",
-      deadlineDate: null,
-      plannedAmount: null,
-      plannedUnit: null,
-      description: "Фоново изучить близкие продукты и отметить только полезные идеи.",
-      notes: "Не копировать интерфейсы напрямую.",
-      createdAt: now(),
-      history: [{ type: "created", at: now(), reason: null }],
-    },
-    {
-      id: uid(),
-      title: "Создать репозиторий",
-      type: "timed",
-      status: "done",
-      scheduleMode: "date",
-      deadlineDate: "2026-07-12",
-      plannedAmount: null,
-      plannedUnit: null,
-      description: "Подготовить репозиторий и синхронизировать локальную папку с GitHub.",
-      notes: "Базовая инфраструктура уже готова.",
-      createdAt: addDays(base, -5),
-      history: [
-        { type: "created", at: addDays(base, -5), reason: null },
-        { type: "started", at: addDays(base, -5) + 10 * 60 * 1000, reason: null },
-        { type: "completed", at: addDays(base, -5) + 17 * 60 * 1000 + 43 * 1000, reason: "Базовая настройка готова." },
-      ],
-    },
-  ];
-}
-
-function loadTasks() {
-  try {
-    var raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return defaultTasks();
-    var parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : defaultTasks();
-  } catch (error) {
-    return defaultTasks();
-  }
-}
-
-function saveTasks() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.tasks));
 }
 
 function eventLabel(type) {
@@ -660,12 +495,12 @@ function closeReason() {
   closeOverlay(elements.reasonOverlay);
 }
 
-function updateTask(taskId, updater) {
+async function updateTask(taskId, updater) {
   state.tasks = state.tasks.map(function (task) {
     if (task.id !== taskId) return task;
     return updater(task);
   });
-  saveTasks();
+  await saveUserTasks(state.tasks);
   render();
 }
 
@@ -693,7 +528,7 @@ function nextStatus(type) {
   return "todo";
 }
 
-function handleAction(taskId, action) {
+async function handleAction(taskId, action) {
   var task = findTask(taskId);
   if (!task) return;
 
@@ -703,14 +538,14 @@ function handleAction(taskId, action) {
   }
 
   if (action === "start") {
-    updateTask(taskId, function (current) {
+    await updateTask(taskId, function (current) {
       return appendEvent(current, "started", null);
     });
     return;
   }
 
   if (action === "resume") {
-    updateTask(taskId, function (current) {
+    await updateTask(taskId, function (current) {
       return appendEvent(current, "resumed", null);
     });
     return;
@@ -725,7 +560,7 @@ function handleAction(taskId, action) {
     state.tasks = state.tasks.filter(function (current) {
       return current.id !== taskId;
     });
-    saveTasks();
+    await saveUserTasks(state.tasks);
     render();
   }
 }
@@ -786,8 +621,68 @@ function createTaskFromForm(formData) {
   return task;
 }
 
+function showLoginError(msg) {
+  elements.authError.textContent = msg || "Неверные логин или пароль";
+  elements.authError.style.display = 'block';
+}
+
+function hideLoginError() {
+  elements.authError.style.display = 'none';
+}
+
+async function logout() {
+  await _supabase.auth.signOut();
+  document.body.classList.remove('authenticated');
+  state.tasks = [];
+  elements.authUsername.textContent = '';
+  elements.logoutButton.hidden = true;
+  render();
+}
+
+async function tryLogin() {
+  hideLoginError();
+  var u = elements.authUser.value.trim().toLowerCase();
+  var p = elements.authPass.value;
+  if (!u || !p) { showLoginError('Введи логин и пароль'); return; }
+  if (u !== 'user1' && u !== 'user2' && u !== 'user3') { showLoginError('Неверные логин или пароль'); return; }
+
+  var email = u + '@track.app';
+  var result = await _supabase.auth.signInWithPassword({ email: email, password: p });
+  if (result.error) { showLoginError('Неверные логин или пароль'); return; }
+
+  elements.authScreen.classList.add('hidden');
+  document.body.classList.add('authenticated');
+  elements.authUsername.textContent = u;
+  elements.logoutButton.hidden = false;
+
+  var tasksResult = await loadUserTasks();
+  state.tasks = tasksResult;
+  render();
+}
+
+async function checkSession() {
+  var sessionResult = await _supabase.auth.getSession();
+  var session = sessionResult.data.session;
+  if (session) {
+    var email = session.user.email || '';
+    var username = email.replace('@track.app', '');
+    elements.authScreen.classList.add('hidden');
+    document.body.classList.add('authenticated');
+    elements.authUsername.textContent = username;
+    elements.logoutButton.hidden = false;
+
+    var tasksResult = await loadUserTasks();
+    state.tasks = tasksResult;
+    render();
+  }
+}
+
 function bindEvents() {
   elements.openCreateButton.addEventListener("click", openCreate);
+
+  elements.authButton.addEventListener("click", tryLogin);
+  elements.authPass.addEventListener("keydown", function (e) { if (e.key === "Enter") tryLogin(); });
+  elements.logoutButton.addEventListener("click", logout);
 
   document.body.addEventListener("click", function (event) {
     var typeButton = event.target.closest("[data-task-type]");
@@ -841,13 +736,13 @@ function bindEvents() {
     }
   });
 
-  elements.createForm.addEventListener("submit", function (event) {
+  elements.createForm.addEventListener("submit", async function (event) {
     event.preventDefault();
     var formData = new FormData(elements.createForm);
     try {
       var task = createTaskFromForm(formData);
       state.tasks.unshift(task);
-      saveTasks();
+      await saveUserTasks(state.tasks);
       render();
       closeCreate();
     } catch (error) {
@@ -855,7 +750,7 @@ function bindEvents() {
     }
   });
 
-  elements.reasonForm.addEventListener("submit", function (event) {
+  elements.reasonForm.addEventListener("submit", async function (event) {
     event.preventDefault();
     if (!state.reasonAction) return;
     var reason = elements.reasonInput.value.trim();
@@ -864,7 +759,7 @@ function bindEvents() {
       return;
     }
     var action = state.reasonAction.action === "pause" ? "paused" : "completed";
-    updateTask(state.reasonAction.taskId, function (task) {
+    await updateTask(state.reasonAction.taskId, function (task) {
       return appendEvent(task, action, reason);
     });
     closeReason();
@@ -879,11 +774,10 @@ function bindEvents() {
   });
 }
 
-function init() {
-  state.tasks = loadTasks();
+async function init() {
   syncCreateFormUI();
   bindEvents();
-  render();
+  await checkSession();
   setInterval(render, 1000);
 }
 

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>track</title>
     <link rel="stylesheet" href="./src/styles.css" />
+    <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <style>
       #auth-screen {
         position: fixed; inset: 0; z-index: 9999;
@@ -39,39 +40,14 @@
         <div class="auth-error" id="auth-error">Неверные логин или пароль</div>
       </div>
     </div>
-    <script>
-      const USERS = {
-        user1: 'PsKoV#5',
-        user2: 'PsKoV#5',
-        user3: 'PsKoV#5',
-      };
-      (function() {
-        const saved = sessionStorage.getItem('track_auth');
-        if (saved && USERS[saved]) { document.body.classList.add('authenticated'); return; }
-        const screen = document.getElementById('auth-screen');
-        screen.classList.remove('hidden');
-        document.body.classList.remove('authenticated');
-        function tryLogin() {
-          const u = document.getElementById('auth-user').value.trim().toLowerCase();
-          const p = document.getElementById('auth-pass').value;
-          if (USERS[u] && USERS[u] === p) {
-            sessionStorage.setItem('track_auth', u);
-            screen.classList.add('hidden');
-            document.body.classList.add('authenticated');
-          } else {
-            document.getElementById('auth-error').style.display = 'block';
-          }
-        }
-        document.getElementById('auth-button').addEventListener('click', tryLogin);
-        document.getElementById('auth-pass').addEventListener('keydown', function(e) { if (e.key === 'Enter') tryLogin(); });
-      })();
-    </script>
     <main class="page">
       <header class="header">
         <div class="title-block">
           <h1>track</h1>
           <p>Живой трекер задач с компактным списком, паузами и деталями.</p>
         </div>
+        <span id="auth-username" class="auth-username"></span>
+        <button class="button button-quiet" id="logout-button" hidden>Выйти</button>
         <button class="button button-primary" id="open-create-button">+ Новая задача</button>
       </header>
 

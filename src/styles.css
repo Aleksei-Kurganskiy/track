@@ -28,6 +28,12 @@ body:not(.authenticated) .modal-overlay {
   display: none !important;
 }
 
+.auth-username {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
 button,
 input,
 select,
