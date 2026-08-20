@@ -692,14 +692,14 @@ async function tryLogin() {
   var result = await _supabase.auth.signInWithPassword({ email: email, password: p });
   if (result.error) { showLoginError('Неверные логин или пароль'); return; }
 
+  var tasksResult = await loadUserTasks();
+  state.tasks = tasksResult;
+  render();
+
   elements.authScreen.classList.add('hidden');
   document.body.classList.add('authenticated');
   elements.authUsername.textContent = u;
   elements.logoutButton.hidden = false;
-
-  var tasksResult = await loadUserTasks();
-  state.tasks = tasksResult;
-  render();
 }
 
 async function checkSession() {
@@ -708,14 +708,14 @@ async function checkSession() {
   if (session) {
     var email = session.user.email || '';
     var username = email.replace('@track.app', '');
+    var tasksResult = await loadUserTasks();
+    state.tasks = tasksResult;
+    render();
+
     elements.authScreen.classList.add('hidden');
     document.body.classList.add('authenticated');
     elements.authUsername.textContent = username;
     elements.logoutButton.hidden = false;
-
-    var tasksResult = await loadUserTasks();
-    state.tasks = tasksResult;
-    render();
   }
 }
 
