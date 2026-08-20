@@ -674,6 +674,7 @@ function hideLoginError() {
 
 function logout() {
   document.body.classList.remove('authenticated');
+  elements.authScreen.classList.remove('hidden');
   state.tasks = [];
   elements.authUsername.textContent = '';
   elements.logoutButton.hidden = true;
