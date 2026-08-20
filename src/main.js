@@ -66,6 +66,48 @@ function addDays(baseTime, days) {
   return baseTime + days * 24 * 60 * 60 * 1000;
 }
 
+async function loadUserTasks() {
+  var userResult = await _supabase.auth.getUser();
+  if (userResult.error) throw userResult.error;
+
+  var result = await _supabase
+    .from("tasks")
+    .select("data")
+    .eq("user_id", userResult.data.user.id)
+    .maybeSingle();
+
+  if (result.error) throw result.error;
+  return result.data ? result.data.data : [];
+}
+
+async function saveUserTasks(tasks) {
+  var userResult = await _supabase.auth.getUser();
+  if (userResult.error) throw userResult.error;
+
+  var userId = userResult.data.user.id;
+  var existingResult = await _supabase
+    .from("tasks")
+    .select("id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (existingResult.error) throw existingResult.error;
+
+  var result;
+  if (existingResult.data) {
+    result = await _supabase
+      .from("tasks")
+      .update({ data: tasks, updated_at: new Date().toISOString() })
+      .eq("id", existingResult.data.id);
+  } else {
+    result = await _supabase
+      .from("tasks")
+      .insert({ user_id: userId, data: tasks });
+  }
+
+  if (result.error) throw result.error;
+}
+
 function eventLabel(type) {
   if (type === "created") return "Создана";
   if (type === "started") return "Запуск";
