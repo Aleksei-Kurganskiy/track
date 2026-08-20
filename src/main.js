@@ -672,13 +672,13 @@ function hideLoginError() {
   elements.authError.style.display = 'none';
 }
 
-async function logout() {
-  await _supabase.auth.signOut();
+function logout() {
   document.body.classList.remove('authenticated');
   state.tasks = [];
   elements.authUsername.textContent = '';
   elements.logoutButton.hidden = true;
   render();
+  _supabase.auth.signOut({ scope: 'local' }).catch(console.error);
 }
 
 async function tryLogin() {
